@@ -15,7 +15,7 @@ const App = () => {
     workerRef.current = new worker();
 
     workerRef.current.onmessage = (event) => {
-      setOutput(event.data);
+      setOutput((prev) => prev + event.data);
       setState("Run");
     };
 
@@ -26,13 +26,14 @@ const App = () => {
 
   const handleRun = useCallback(() => {
     if (!workerRef.current) return;
+    setOutput("");
     setState("Loading...");
     workerRef.current.postMessage({ code: code, input: input });
   }, [code, input]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-neutral-900 py-4 text-white">
-      <div className="mx-4 h-4/5 w-2/5 rounded bg-zinc-800 px-4 py-4">
+      <div className="mx-4 h-4/5 w-full max-w-[40rem] rounded bg-zinc-800 px-4 py-4">
         <p className="text-center font-bold text-3xl">Code</p>
         <textarea
           value={code}

@@ -1,13 +1,11 @@
-export function brainfuckInterpreter(code: string, input = ""): string {
-  const memory = new Uint8Array(30000);
+export function brainfuckInterpreter(code: string, input = "") {
+  const memory = new Uint8Array(1000);
   let pointer = 0;
   let inputPointer = 0;
-  let output = "";
   const loopStack = [];
 
   for (let i = 0; i < code.length; i++) {
     const command = code[i];
-
     switch (command) {
       case ">":
         pointer++;
@@ -24,8 +22,7 @@ export function brainfuckInterpreter(code: string, input = ""): string {
         memory[pointer] = (memory[pointer] - 1 + 256) % 256;
         break;
       case ".":
-        output += String.fromCharCode(memory[pointer]);
-        self.postMessage(output);
+        self.postMessage(String.fromCharCode(memory[pointer]));
         break;
       case ",":
         if (inputPointer < input.length) {
@@ -55,13 +52,9 @@ export function brainfuckInterpreter(code: string, input = ""): string {
         break;
     }
   }
-
-  return output;
 }
 
 self.onmessage = (event) => {
   const data = event.data;
-
-  const result = brainfuckInterpreter(data.code, data.input);
-  self.postMessage(result);
+  brainfuckInterpreter(data.code, data.input);
 };
